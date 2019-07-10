@@ -12,7 +12,7 @@ app.use(bodyParser.json())
 
 app.use(require('./routes/usuarios'));
 
-mongoose.connect('mongodb://192.168.0.201:27017/udemy-nodejs-cafe', (err, resp) => {
+mongoose.connect('mongodb://192.168.0.201:27017/udemy-nodejs-cafe', { useNewUrlParser: true }, (err, resp) => {
     if (err) throw err;
     console.info('database: udemy-nodejs-cafe connection OK');
 });
