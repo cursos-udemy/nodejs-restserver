@@ -6,7 +6,8 @@ const { Schema } = mongoose;
 const roles = {
     values: ['ADMIN_ROLE', 'USER_ROLE'],
     message: '{VALUE} no es un rol permitido'
-}
+};
+
 const usuarioSchema = new Schema({
     nombre: { type: String, required: [true, 'El nombre es obligatorio'] },
     email: { type: String, required: [true, 'El email es obligatorio'], unique: true },
@@ -16,6 +17,12 @@ const usuarioSchema = new Schema({
     estado: { type: Boolean, required: true, default: true },
     google: { type: Boolean, required: false, default: false }
 });
+
+usuarioSchema.methods.toJSON() = function () {
+    const user = this;
+    let userObject = user.toObject();
+    delete userObject.password;
+};
 
 //usuarioSchema.plugin(uniqueValidator, {message: '{PATH}: Existe un usuario con el mismo email'});
 usuarioSchema.plugin(uniqueValidator, {message: 'Existe un usuario con este email'});
