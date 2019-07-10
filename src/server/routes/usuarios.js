@@ -19,7 +19,7 @@ app.post('/usuario', (req, res) => {
 
     usuario.save((err, usuarioDB) => {
         if (err) {
-            console.error(err.message);
+            console.error(err);
             return res.status(400).json({
                 status: 'error',
                 message: 'No se logro crear el usuario',
