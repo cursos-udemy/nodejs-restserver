@@ -4,7 +4,7 @@
   "description": "Primer REST server con nodeJS",
   "main": "index.js",
   "scripts": {
-    "start": "node ./src/server.js",
+    "start": "node ./src/server/app.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "gwfernandez",
