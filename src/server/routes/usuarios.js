@@ -58,7 +58,7 @@ app.post('/usuario', (req, res) => {
         res.json({
             status: 'ok',
             message: 'Usuario generado correctamente',
-            data: usuarioDB
+            usuario: usuarioDB
         });
     });
 });
@@ -79,13 +79,37 @@ app.put('/usuario/:id', (req, res) => {
         res.json({
             status: 'ok',
             message: 'Usuario actualizo correctamente',
-            data: usuarioDB
+            usuario: usuarioDB
         });
     });
 });
 
 app.delete('/usuario', (req, res) => {
-    res.json('delete usuario');
+    const { id } = req.body;
+    Usuario.findByIdAndRemove(id, (err, usuarioEliminado) => {
+        if (err) {
+            console.error(err);
+            return res.status(400).json({
+                status: 'error',
+                message: 'Error al eliminar el usuario',
+                detail: err.message
+            });
+        }
+
+        if (!usuarioEliminado) {
+            console.error(err);
+            return res.status(400).json({
+                status: 'error',
+                message: 'No existe el usuario eliminar',
+            });
+        }
+
+        res.json({
+            status: 'ok',
+            message: 'Usuario elimino correctamente',
+            usuario: usuarioEliminado
+        });
+    });
 });
 
 module.exports = app;
