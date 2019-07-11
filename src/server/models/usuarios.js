@@ -18,13 +18,13 @@ const usuarioSchema = new Schema({
     google: { type: Boolean, required: false, default: false }
 });
 
-usuarioSchema.methods.toJSON() = function () {
-    const user = this;
-    let userObject = user.toObject();
-    delete userObject.password;
-};
+usuarioSchema.methods.toJSON = function() {
+    var obj = this.toObject();
+    delete obj.password;
+    return obj;
+   }
 
 //usuarioSchema.plugin(uniqueValidator, {message: '{PATH}: Existe un usuario con el mismo email'});
-usuarioSchema.plugin(uniqueValidator, {message: 'Existe un usuario con este email'});
+//usuarioSchema.plugin(uniqueValidator, {message: 'Existe un usuario con este email'});
 
 module.exports = mongoose.model('usuario', usuarioSchema);
