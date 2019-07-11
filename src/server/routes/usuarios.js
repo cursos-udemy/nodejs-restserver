@@ -11,7 +11,8 @@ app.get('/usuario', (req, res) => {
     const limit = Number(req.query.limit || '5');
 
     const conditions = {};
-    Usuario.find(conditions)
+    const fieldsFilter = 'nombre email google img role estado';
+    Usuario.find(conditions, fieldsFilter)
         .skip(skip)
         .limit(limit)
         .exec((err, usuarios) => {
