@@ -10,7 +10,8 @@ app.get('/usuario', (req, res) => {
     const skip = Number(req.query.skip || '0');
     const limit = Number(req.query.limit || '5');
 
-    Usuario.find({})
+    const conditions = {};
+    Usuario.find(conditions)
         .skip(skip)
         .limit(limit)
         .exec((err, usuarios) => {
@@ -22,9 +23,13 @@ app.get('/usuario', (req, res) => {
                     detail: err.message
                 });
             }
-            res.json({
-                status: 'ok',
-                usuarios
+
+            Usuario.count(conditions, (err, count) => {
+                res.json({
+                    status: 'ok',
+                    usuarios,
+                    elements: err ? -1 : count
+                });
             });
         });
 });
