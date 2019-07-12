@@ -12,7 +12,9 @@ const validToken = (request, response, next) => {
                 detail: err.message
             });
         }
-        request.user = decoded;
+
+        console.log('decoded: ', decoded);
+        request.user = decoded
         next();
     });
 };

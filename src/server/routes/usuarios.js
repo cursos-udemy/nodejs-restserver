@@ -6,8 +6,9 @@ const Usuario = require('../models/usuarios');
 const { validToken } = require('../middlewares/authentication');
 const app = express();
 
-app.get('/usuario', validToken , (req, res) => {
+app.get('/usuario', validToken, (req, res) => {
 
+    console.log('user authenticated: ', req.user);
     const skip = Number(req.query.skip || '0');
     const limit = Number(req.query.limit || '5');
 
@@ -36,7 +37,7 @@ app.get('/usuario', validToken , (req, res) => {
         });
 });
 
-app.post('/usuario', (req, res) => {
+app.post('/usuario', validToken, (req, res) => {
     const body = req.body;
 
     const usuario = new Usuario({
@@ -64,7 +65,7 @@ app.post('/usuario', (req, res) => {
     });
 });
 
-app.put('/usuario/:id', (req, res) => {
+app.put('/usuario/:id', validToken, (req, res) => {
     const { id } = req.params;
     const body = _.pick(req.body, ['nombre', 'email', 'img', 'role']);
     console.log('body: ', body);
@@ -85,7 +86,7 @@ app.put('/usuario/:id', (req, res) => {
     });
 });
 
-app.delete('/usuario', (req, res) => {
+app.delete('/usuario', validToken, (req, res) => {
     const { id } = req.body;
     //    Usuario.findByIdAndRemove(id, (err, usuarioEliminado) => {
     Usuario.findByIdAndUpdate(id, { estado: false }, { new: true }, (err, usuarioEliminado) => {

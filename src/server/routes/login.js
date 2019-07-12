@@ -31,9 +31,14 @@ app.post('/login', (req, res) => {
                 message: 'Usuario o PASSWORD incorrecto',
             });
         }
-        
-        const token = jwt.sign ({
-            username: `${user.nombre}`
+
+        const token = jwt.sign({
+            user: {
+                name: user.nombre,
+                email: user.email,
+                role: user.role,
+                permissions: []
+            }
         }, process.env.TOKEN_PRIVATE_KEY, { expiresIn: process.env.TOKEN_EXPIRED_IN });
         res.json({ status: 'ok', message: 'login successfully!', token });
     });
