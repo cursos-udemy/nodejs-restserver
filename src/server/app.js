@@ -13,7 +13,7 @@ app.use(require('./routes'));
 
 mongoose.connect(process.env.DATA_BASE_URL, { useNewUrlParser: true, useCreateIndex: true }, (err, resp) => {
     if (err) throw err;
-    console.info('database: udemy-nodejs-cafe connection OK');
+    console.info('database connection OK');
 });
 
 app.listen(PORT, () => {

@@ -1,5 +1,8 @@
 const jwt = require('jsonwebtoken');
 
+const ADMIN_ROLE = 'ADMIN_ROLE';
+const USER_ROLE = 'USER_ROLE';
+
 const validToken = (request, response, next) => {
     const token = request.get('Authorization');
 
@@ -13,12 +16,35 @@ const validToken = (request, response, next) => {
             });
         }
 
-        console.log('decoded: ', decoded);
-        request.user = decoded
+        request.userContext = decoded
         next();
     });
 };
 
+const isUserAdminRole = (request, response, next) => {
+    const { role } = request.userContext.user;
+    if (role !== ADMIN_ROLE) {
+        return response.status(401).json({
+            status: 'error',
+            message: 'Usuario no autorizado para realizar esta accion',
+        });
+    }
+    next();
+};
+
+const isUserUserRole = (request, response, next) => {
+    const { role } = request.userContext.user;
+    if (role !== USER_ROLE) {
+        return response.status(401).json({
+            status: 'error',
+            message: 'Usuario no autorizado para realizar esta accion',
+        });
+    }
+    next();
+};
+
 module.exports = {
-    validToken
+    validToken,
+    isUserAdminRole,
+    isUserUserRole
 }
