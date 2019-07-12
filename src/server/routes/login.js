@@ -1,5 +1,6 @@
 const express = require('express');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const Usuario = require('../models/usuarios');
 const app = express();
 
@@ -30,7 +31,11 @@ app.post('/login', (req, res) => {
                 message: 'Usuario o PASSWORD incorrecto',
             });
         }
-        res.json({ status: 'ok', message: 'login successfully!', token: 'hhhh' });
+        
+        const token = jwt.sign ({
+            username: `${user.nombre}`
+        }, process.env.TOKEN_PRIVATE_KEY, { expiresIn: process.env.TOKEN_EXPIRED_IN });
+        res.json({ status: 'ok', message: 'login successfully!', token });
     });
 
 });
