@@ -10,7 +10,7 @@ app.get('/usuario', (req, res) => {
     const skip = Number(req.query.skip || '0');
     const limit = Number(req.query.limit || '5');
 
-    const conditions = {};
+    const conditions = {estado: true};
     const fieldsFilter = 'nombre email google img role estado';
     Usuario.find(conditions, fieldsFilter)
         .skip(skip)
@@ -86,7 +86,8 @@ app.put('/usuario/:id', (req, res) => {
 
 app.delete('/usuario', (req, res) => {
     const { id } = req.body;
-    Usuario.findByIdAndRemove(id, (err, usuarioEliminado) => {
+    //    Usuario.findByIdAndRemove(id, (err, usuarioEliminado) => {
+    Usuario.findByIdAndUpdate(id, { estado: false }, { new: true }, (err, usuarioEliminado) => {
         if (err) {
             console.error(err);
             return res.status(400).json({
