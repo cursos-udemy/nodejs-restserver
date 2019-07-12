@@ -3,14 +3,15 @@ const bcrypt = require('bcrypt');
 const _ = require('underscore');
 
 const Usuario = require('../models/usuarios');
+const { validToken } = require('../middlewares/authentication');
 const app = express();
 
-app.get('/usuario', (req, res) => {
+app.get('/usuario', validToken , (req, res) => {
 
     const skip = Number(req.query.skip || '0');
     const limit = Number(req.query.limit || '5');
 
-    const conditions = {estado: true};
+    const conditions = { estado: true };
     const fieldsFilter = 'nombre email google img role estado';
     Usuario.find(conditions, fieldsFilter)
         .skip(skip)
