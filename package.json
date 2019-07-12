@@ -4,7 +4,8 @@
   "description": "Primer REST server con nodeJS",
   "main": "index.js",
   "engines": {
-    "node": "10.16.0" 
+    "node": "10.16.0" ,
+    "npm": "6.10.0"
   },
   "scripts": {
     "start": "node ./src/server/app.js",
