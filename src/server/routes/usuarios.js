@@ -25,7 +25,7 @@ app.get('/usuario', (req, res) => {
                 });
             }
 
-            Usuario.count(conditions, (err, count) => {
+            Usuario.countDocuments(conditions, (err, count) => {
                 res.json({
                     status: 'ok',
                     usuarios,
