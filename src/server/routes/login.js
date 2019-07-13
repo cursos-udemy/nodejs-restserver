@@ -65,6 +65,7 @@ async function verify(token) {
 
 app.post('/externalsignin', async (request, response) => {
     const token = request.body.idtoken;
+    // console.info('idtoken: ', token);
     const user = await verify(token)
         .catch(err => {
             console.error(err);
