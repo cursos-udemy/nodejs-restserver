@@ -8,4 +8,4 @@ const categoriaSchema = new Schema({
     usuario: {type: Schema.Types.ObjectId, ref: 'Usuario'},
 });
 
-module.exports = mongoose.model('categoria', categoriaSchema);
+module.exports = mongoose.model('Categoria', categoriaSchema);

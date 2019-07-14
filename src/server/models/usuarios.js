@@ -27,4 +27,4 @@ usuarioSchema.methods.toJSON = function () {
 //usuarioSchema.plugin(uniqueValidator, {message: '{PATH}: Existe un usuario con el mismo email'});
 //usuarioSchema.plugin(uniqueValidator, {message: 'Existe un usuario con este email'});
 
-module.exports = mongoose.model('usuario', usuarioSchema);
+module.exports = mongoose.model('Usuario', usuarioSchema);

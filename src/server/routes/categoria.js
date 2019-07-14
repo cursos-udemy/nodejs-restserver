@@ -43,9 +43,9 @@ app.post('/categoria', validToken, (req, res) => {
 
 app.put('/categoria/:id', validToken, (req, res) => {
     const { id } = req.params;
-    const body = { descripcion: req.body.descripcion };
+    const data = { descripcion: req.body.descripcion };
     const optionals = { new: true, runValidators: true };
-    Categoria.findByIdAndUpdate(id, body, optionals, (err, categoria) => {
+    Categoria.findByIdAndUpdate(id, data, optionals, (err, categoria) => {
         if (err) return handleResponseError(400, res, 'Error al actualizar la categoria', err);
         res.json({
             status: 'ok',
