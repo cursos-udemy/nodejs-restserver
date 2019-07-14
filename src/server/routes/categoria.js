@@ -2,16 +2,20 @@ const express = require('express');
 
 const { validToken, isUserAdminRole } = require('../middlewares/authentication');
 const Categoria = require('../models/categorias');
+const Usuario = require('../models/usuarios');
 const { handleResponseError } = require('../util/handlers-errors')
 
 const app = express();
 
 app.get('/categoria', validToken, (req, res) => {
     const conditions = {};
-    Categoria.find(conditions).exec((err, categorias) => {
-        if (err) return handleResponseError(500, res, 'Error al consultar las categorias', err);
-        res.json({ status: 'ok', categorias });
-    });
+    Categoria.find(conditions)
+        .sort('descripcion')
+        .populate({ path: 'usuario', model: Usuario, select: 'nombre email' })
+        .exec((err, categorias) => {
+            if (err) return handleResponseError(500, res, 'Error al consultar las categorias', err);
+            res.json({ status: 'ok', categorias });
+        });
 });
 
 app.get('/categoria/:id', validToken, (req, res) => {
@@ -55,6 +59,7 @@ app.delete('/categoria/:id', [validToken, isUserAdminRole], (req, res) => {
     const { id } = req.params;
     Categoria.findByIdAndRemove(id, (err, categoria) => {
         if (err) return handleResponseError(500, res, 'Error al eliminar la categoria', err);
+        if (!categoria) return handleResponseError(400, res, 'La categoria no existe');
         res.json({
             status: 'ok',
             message: 'Categoria eliminada correctamente',
