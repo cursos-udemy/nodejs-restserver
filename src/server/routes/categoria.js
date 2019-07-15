@@ -20,11 +20,12 @@ app.get('/categoria', validToken, (req, res) => {
 
 app.get('/categoria/:id', validToken, (req, res) => {
     const { id } = req.params;
-    Categoria.findById(id, (err, categoria) => {
-        if (err) return handleResponseError(500, res, 'Error al consultar la categoria', err);
-        if (!categoria) return handleResponseError(400, res, `No se encontro la categoria "${id}"`);
-        res.json({ status: 'ok', categoria });
-    })
+    Categoria.findById(id)
+        .populate({ path: 'usuario', model: Usuario, select: 'nombre email' })
+        .exec((err, categoria) => {
+            if (err) return handleResponseError(500, res, 'Error al consultar la categoria', err);
+            res.json({ status: 'ok', categoria });
+        });
 });
 
 app.post('/categoria', validToken, (req, res) => {
@@ -43,10 +44,11 @@ app.post('/categoria', validToken, (req, res) => {
 
 app.put('/categoria/:id', validToken, (req, res) => {
     const { id } = req.params;
-    const data = { descripcion: req.body.descripcion };
+    const data = { descripcion: req.body.descripcion, usuario: req.userContext.user.ref };
     const optionals = { new: true, runValidators: true };
     Categoria.findByIdAndUpdate(id, data, optionals, (err, categoria) => {
         if (err) return handleResponseError(400, res, 'Error al actualizar la categoria', err);
+        if (!categoria) return handleResponseError(400, res, 'La categoria no existe');
         res.json({
             status: 'ok',
             message: 'Categoria actualizada correctamente',

@@ -52,6 +52,7 @@ app.put('/usuario/:id', [validToken, isUserAdminRole], (req, res) => {
     const optionals = { new: true, runValidators: true };
     Usuario.findByIdAndUpdate(id, body, optionals, (err, usuario) => {
         if (err) return handleResponseError(400, 'Error al actualizar al usuario!', err);
+        if (!usuario) return handleResponseError(400, res, 'El usuario no existe');
         res.json({
             status: 'ok',
             message: 'Usuario actualizado correctamente!',
@@ -60,15 +61,16 @@ app.put('/usuario/:id', [validToken, isUserAdminRole], (req, res) => {
     });
 });
 
-app.delete('/usuario', [validToken, isUserAdminRole], (req, res) => {
-    const { id } = req.body;
-    const conditions = { estado: false };
+app.delete('/usuario/:id', [validToken, isUserAdminRole], (req, res) => {
+    const { id } = req.params;
+    const data = { estado: false };
     const optionals = { new: true };
-    Usuario.findByIdAndUpdate(id, conditions, optionals, (err, usuario) => {
+    Usuario.findByIdAndUpdate(id, data, optionals, (err, usuario) => {
         if (err) return handleResponseError(400, 'Error al eliminar al usuario', err);
+        if (!usuario) return handleResponseError(400, res, 'El usuario no existe');
         res.json({
             status: 'ok',
-            message: 'Usuario elimino correctamente'
+            message: 'Usuario eliminado correctamente'
         });
     });
 });

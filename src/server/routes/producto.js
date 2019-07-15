@@ -9,28 +9,52 @@ const { handleResponseError } = require('../util/handlers-errors')
 const app = express();
 
 app.get('/productos', validToken, (req, res) => {
-    //recuperar todos los productos
-    //poppulate usuario () y categoria
-    // paginado
+    const skip = Number(req.query.skip || '0');
+    const limit = Number(req.query.limit || '5');
+    const conditions = { activo: true };
+    const fieldsFilter = '';
+    Producto.find(conditions, fieldsFilter)
+        .skip(skip)
+        .limit(limit)
+        .populate({ path: 'categoria', model: Categoria, select: 'descripcion' })
+        .populate({ path: 'usuario', model: Usuario, select: 'nombre email' })
+        .exec((err, productos) => {
+            if (err) return handleResponseError(500, 'Error al realizar la consulta', err);
+            Producto.countDocuments(conditions, (err, count) => {
+                res.json({
+                    status: 'ok',
+                    productos,
+                    elements: err ? -1 : count
+                });
+            });
+        });
 });
 
-
 app.get('/producto/:id', validToken, (req, res) => {
-    //poppulate usuario () y categoria
+    const { id } = req.params;
+    console.log(id);
+    Producto.findById(id)
+        .populate({ path: 'categoria', model: Categoria, select: 'descripcion' })
+        .populate({ path: 'usuario', model: Usuario, select: 'nombre email' })
+        .exec((err, producto) => {
+            if (err) return handleResponseError(500, res, 'Error al consultar el producto', err);
+            res.json({ status: 'ok', producto });
+        });
 });
 
 app.post('/producto', validToken, (req, res) => {
-
     const body = req.body;
-
-    const producto = new Producto({
+    let data = {
         nombre: body.nombre,
         precioUnitario: body.precioUnitario,
         descripcion: body.descripcion,
-        categoria: body.categoriaId,
         usuario: req.userContext.user.ref,
-    });
+    }
+    if (body.categoria) {
+        data.categoria = body.categoria;
+    }
 
+    const producto = new Producto(data);
     const options = {}
     producto.save(options, (err, productoDB) => {
         if (err) return handleResponseError(400, res, 'Error al crear el producto', err);
@@ -59,11 +83,23 @@ app.put('/producto/:id', validToken, (req, res) => {
     const optionals = { new: true, runValidators: true };
     Producto.findByIdAndUpdate(id, data, optionals, (err, producto) => {
         if (err) return handleResponseError(400, res, 'Error al actualizar el producto', err);
+        if (!producto) return handleResponseError(400, res, 'El producto no existe');
         res.json({ status: 'ok', producto });
     });
 });
 
 app.delete('/producto/:id', validToken, (req, res) => {
+    const { id } = req.params;
+    const data = { activo: false, usuario: req.userContext.user.ref };
+    const optionals = { new: true };
+    Producto.findByIdAndUpdate(id, data, optionals, (err, producto) => {
+        if (err) return handleResponseError(400, 'Error al eliminar el producto', err);
+        if (!producto) return handleResponseError(400, res, 'El producto no existe');
+        res.json({
+            status: 'ok',
+            message: 'Producto eliminado correctamente'
+        });
+    });
 
 });
 

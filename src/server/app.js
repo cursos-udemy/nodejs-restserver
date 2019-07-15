@@ -7,7 +7,7 @@ const path = require('path');
 
 const PORT = process.env.PORT;
 
-mongoose.connect(process.env.DATA_BASE_URL, { useNewUrlParser: true, useCreateIndex: true }, (err, resp) => {
+mongoose.connect(process.env.DATA_BASE_URL, { useNewUrlParser: true, useCreateIndex: true, useFindAndModify: false }, (err, resp) => {
     if (err) throw err;
     console.info('database connection OK');
 });
