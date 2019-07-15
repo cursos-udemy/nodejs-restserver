@@ -13,4 +13,4 @@ process.env.TOKEN_PRIVATE_KEY = process.env.TOKEN_PRIVATE_KEY || 'jendrix';
 process.env.CLIENT_ID = process.env.CLIENT_ID || '220412093307-bqh443k1u6lbs2futcreamoablt69fpq.apps.googleusercontent.com';
 
 //TODO: SOLO PARA PRUEBAS!
-//process.env.DATA_BASE_URL = 'mongodb+srv://???:???@cluster0-zfegt.mongodb.net/udemy-nodejs-cafe?retryWrites=true&w=majority';
+process.env.DATA_BASE_URL = 'mongodb+srv://jendrix:jendrix@cluster0-zfegt.mongodb.net/udemy-nodejs-cafe?retryWrites=true&w=majority';
