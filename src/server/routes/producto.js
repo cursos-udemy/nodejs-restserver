@@ -32,13 +32,34 @@ app.get('/productos', validToken, (req, res) => {
 
 app.get('/producto/:id', validToken, (req, res) => {
     const { id } = req.params;
-    console.log(id);
     Producto.findById(id)
         .populate({ path: 'categoria', model: Categoria, select: 'descripcion' })
         .populate({ path: 'usuario', model: Usuario, select: 'nombre email' })
         .exec((err, producto) => {
             if (err) return handleResponseError(500, res, 'Error al consultar el producto', err);
             res.json({ status: 'ok', producto });
+        });
+});
+
+app.get('/productos/search', validToken, (req, res) => {
+    const query = req.query;
+    let conditions = {};
+    if (query.categoria) {
+        conditions.categoria = query.categoria;
+    }
+    if (query.nombre) {
+        const regex = new RegExp(query.nombre, 'i');
+        conditions.nombre = regex;
+    }
+    if (query.activo) {
+        conditions.activo = query.activo;
+    }
+    Producto.find(conditions)
+        .populate({ path: 'categoria', model: Categoria, select: 'descripcion' })
+        //.populate({ path: 'usuario', model: Usuario, select: 'nombre email' })
+        .exec((err, productos) => {
+            if (err) return handleResponseError(500, res, 'Error al consultar los productos', err);
+            res.json({ status: 'ok', productos });
         });
 });
 
@@ -100,7 +121,6 @@ app.delete('/producto/:id', validToken, (req, res) => {
             message: 'Producto eliminado correctamente'
         });
     });
-
 });
 
 module.exports = app;
