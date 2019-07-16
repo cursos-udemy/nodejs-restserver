@@ -5,8 +5,24 @@ const USER_ROLE = 'USER_ROLE';
 
 const validToken = (request, response, next) => {
     const token = request.get('Authorization');
+    jwt.verify(token, process.env.TOKEN_PRIVATE_KEY, (err, decoded) => {
+        if (err) {
+            console.error(err);
+            return response.status(401).json({
+                status: 'error',
+                message: 'Usuario no autorizado para solicitar el servicio',
+                detail: err.message
+            });
+        }
 
-    const a = jwt.verify(token, process.env.TOKEN_PRIVATE_KEY, (err, decoded) => {
+        request.userContext = decoded
+        next();
+    });
+};
+
+const validTokenURL = (request, response, next) => {
+    const token = request.query.token;
+    jwt.verify(token, process.env.TOKEN_PRIVATE_KEY, (err, decoded) => {
         if (err) {
             console.error(err);
             return response.status(401).json({
@@ -45,6 +61,7 @@ const isUserUserRole = (request, response, next) => {
 
 module.exports = {
     validToken,
+    validTokenURL,
     isUserAdminRole,
     isUserUserRole
 }
