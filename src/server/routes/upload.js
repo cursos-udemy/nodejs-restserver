@@ -30,7 +30,9 @@ app.post('/upload/:folder/:id', (req, res) => {
     if (!extensions.includes(fileExtension)) return handleResponseError(400, res, 'La extension del archivo no esta permitida');
 
     const newFileName = `${id}_${(new Date()).getTime()}.${fileExtension}`;
-    fileUpload.mv(`./src/uploads/${folder}/${newFileName}`, (err) => {
+    const pathFile = path.resolve(__dirname, `../../uploads/${folder}/${newFileName}`);
+    console.log(pathFile);
+    fileUpload.mv(pathFile, (err) => {
         if (err) return handleResponseError(500, res, 'Error al subir el archivo', err);
         if (folder === 'usuarios') {
             updateImagenUsuario(res, id, newFileName);
