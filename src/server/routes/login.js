@@ -49,8 +49,9 @@ async function verify(token) {
 
 app.post('/externalsignin', async (request, response) => {
     const token = request.body.idtoken;
+    let user = null;
     try {
-        const user = await verify(token)
+        user = await verify(token)
     } catch (err) {
         return handleResponseError(403, response, err.message);
     };
@@ -62,7 +63,7 @@ app.post('/externalsignin', async (request, response) => {
                 return handleResponseError(400, response, 'Debe ingresar con su cuenta normal');
             } else {
                 // Actualizo las credendenciales
-                const token = createToken(userBD);
+                const token = createToken(userDB);
                 response.json({ status: 'ok', message: 'login successfully!', token });
             }
         } else {
@@ -75,7 +76,7 @@ app.post('/externalsignin', async (request, response) => {
             usuario.password = ':)';
 
             usuario.save((err, usuarioDB) => {
-                if (err) return handleResponseError(500, res, 'Error en el proceso de login', err);
+                if (err) return handleResponseError(500, response, 'Error en el proceso de login', err);
                 const token = createToken(usuarioDB);
                 response.json({ status: 'ok', message: 'login successfully!', token });
             });
