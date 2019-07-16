@@ -5,11 +5,9 @@ const fs = require('fs');
 
 const { handleResponseError } = require('../util/handlers-errors')
 const Usuario = require('../models/usuarios');
-const Prodcuto = require('../models/productos');
+const Producto = require('../models/productos');
 
 const app = express();
-
-
 
 // default options
 app.use(fileUpload());
@@ -34,13 +32,17 @@ app.post('/upload/:folder/:id', (req, res) => {
     const newFileName = `${id}_${(new Date()).getTime()}.${fileExtension}`;
     fileUpload.mv(`./src/uploads/${folder}/${newFileName}`, (err) => {
         if (err) return handleResponseError(500, res, 'Error al subir el archivo', err);
-        updateImagenUsuario(res, id, newFileName);
+        if (folder === 'usuarios') {
+            updateImagenUsuario(res, id, newFileName);
+        } else {
+            updateImagenProducto(res, id, newFileName);
+        }
     });
 });
 
 function updateImagenUsuario(res, id, filename) {
+    console.log('actualizar la imagen del usuario');
     const originFolder = 'usuarios';
-
     Usuario.findById(id, (err, usuario) => {
         if (err) {
             deleteImage(filename, originFolder);
@@ -62,7 +64,6 @@ function updateImagenUsuario(res, id, filename) {
 
 function updateImagenProducto(res, id, filename) {
     const originFolder = 'productos';
-    const imageToDelete = producto.img;
     Producto.findById(id, (err, producto) => {
         if (err) {
             deleteImage(filename, originFolder);
@@ -72,24 +73,23 @@ function updateImagenProducto(res, id, filename) {
             deleteImage(filename, originFolder);
             return handleResponseError(400, res, `No existe el producto ${id}`);
         }
+        const imageToDelete = producto.img;
         producto.img = filename;
-        producto.save((e, prodcutoDB) => {
+        producto.save((e, productoDB) => {
             if (e) return handleResponseError(500, res, 'Error al actualizar el producto.');
             deleteImage(imageToDelete, originFolder);
-            res.json({ status: 'ok', message: 'Archivo subido correctamente', producto: prodcutoDB });
+            res.json({ status: 'ok', message: 'Archivo subido correctamente', producto: productoDB });
         })
     });
 }
 
 function deleteImage(filename, originFolfer) {
-    const imagePath = path.resolve(__dirname, `../../uploads/${originFolfer}/${filename}`);
-    if (fs.existsSync(imagePath)) {
-        fs.unlinkSync(imagePath);
+    if (filename) {
+        const imagePath = path.resolve(__dirname, `../../uploads/${originFolfer}/${filename}`);
+        if (fs.existsSync(imagePath)) {
+            fs.unlinkSync(imagePath);
+        }
     }
-}
-
-function updateImagenProducto(id) {
-
 }
 
 module.exports = app;

@@ -8,6 +8,7 @@ const productoSchema = new Schema({
     precioUnitario: { type: Number, required: [true, 'El precio unitario es obligatorio'] },
     descripcion: { type: String, required: false },
     activo: { type: Boolean, required: false, default: true },
+    img: { type: String, required: false },
     categoria: {type: Schema.Types.ObjectId, ref: 'Categoria'},
     usuario: {type: Schema.Types.ObjectId, ref: 'Usuario'},
 });
